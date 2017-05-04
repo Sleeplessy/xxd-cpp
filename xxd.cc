@@ -4,7 +4,7 @@
 #include <iostream>
 #include <sstream>
 static const char *option_string = "s:abc:EeghHil:ouv";
-static const char *__version = "0.0.1";
+static const char *__version = "\033[1;31m0.0.1\033[0m";
 std::string ContentToHex(char Content, bool upper = false) {
   std::stringstream stream_tmp;
   stream_tmp
@@ -16,9 +16,8 @@ std::string ContentToHex(char Content, bool upper = false) {
 }
 
 // Function that returns help infomation string
-const std::string PrintHelp(std::string param = "-h") {
+const std::string PrintHelp() {
   std::stringstream stream_tmp;
-  if (param == "-h")
     stream_tmp << "Usage:\n\t\t\033[1;31mxxd\033[0m \033[2;38m[options]\033[0m "
                   "[infile [outfile]]\n\tor\n\t\t\033[1;31mxxd\033[0m -r "
                   "[-s [-]offset [-c cols] [-ps] [infile [outfile]]]";
@@ -63,7 +62,9 @@ int main(int argc, char **argv) {
     while (params != -1) {
       switch (params) {
         case 'v':
-          std::cout << __version;
+          std::cout<<"\033[1;34mxxd-cpp\033[0m version: " << __version<<std::endl;
+		  return 0;
+		  break;
         case 'H':
         case 'h':
         case '?':
@@ -82,6 +83,7 @@ int main(int argc, char **argv) {
       }
       params = getopt(argc, argv, option_string);
     }
+
     if (!CheckFileExist(argv[optind])) {
       std::cout << "xxd: " << argv[1] << ": No such file or directory."
                 << std::endl;  // file not exist
@@ -92,7 +94,7 @@ int main(int argc, char **argv) {
     if (output_file.is_open())
       output_file << hexdump;
     else
-      std::cout << hexdump;
+      std::cout << hexdump<<std::endl;
   }
   return 0;
 }
