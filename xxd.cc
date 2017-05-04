@@ -6,6 +6,7 @@
 #include <map>
 #include <sstream>
 static const char *option_string = "s:abc:EeghHil:ouv";
+static const char *__version = "0.0.1";
 std::string ContentToHex(char Content, bool upper = false) {
   std::stringstream stream_tmp;
   stream_tmp
@@ -30,8 +31,8 @@ inline bool CheckFileExist(char *&file_name) {
   return (access(file_name, F_OK) != -1);
 }
 
-const std::string ConvertToHex(std::ifstream &input_file,
-                               bool upper = false,int width = 16) {
+const std::string ConvertToHex(std::ifstream &input_file, bool upper = false,
+                               int width = 16) {
   std::string file_contents;  // String to store file contents
   input_file.seekg(0, std::ios::end);
   long file_length = input_file.tellg();
@@ -54,44 +55,46 @@ std::string ConvertToHex(std::stringstream user_input) {
 int main(int argc, char **argv) {
   std::ifstream input_file;
   std::ofstream output_file;
-  int seek=0;
+  int seek = 0;
   if (argc < 2)  // No inputs?
     std::cout << PrintHelp();
   else {
     int params = 0;
     bool upper = false;
-    params = getopt(argc, argv, option_string); // parse command options
+    params = getopt(argc, argv, option_string);  // parse command options
     while (params != -1) {
       switch (params) {
-        case 'H':case 'h':case '?':
+        case 'v':
+          std::cout << __version;
+        case 'H':
+        case 'h':
+        case '?':
           std::cout << PrintHelp();
-		  return 0;
+          return 0;
           break;
         case 'u':
           upper = true;
-		  break;
-		case 's':
-		  seek=optind;
-		  break;
-		case 'o':
-		  output_file.open(argv[optind],std::ios::binary);
-		  break;
+          break;
+        case 's':
+          seek = optind;
+          break;
+        case 'o':
+          output_file.open(argv[optind], std::ios::binary);
+          break;
       }
       params = getopt(argc, argv, option_string);
     }
     if (!CheckFileExist(argv[optind])) {
       std::cout << "xxd: " << argv[1] << ": No such file or directory."
                 << std::endl;  // file not exist
-	  return -1;
+      return -1;
     }
-	if(input_file.good())
-    input_file.open(argv[optind], std::ios::binary);
-	std::string hexdump = ConvertToHex(input_file,upper);
-	if(output_file.is_open())
-			output_file<<hexdump;
-	else
-			std::cout<<hexdump;
-
+    if (input_file.good()) input_file.open(argv[optind], std::ios::binary);
+    std::string hexdump = ConvertToHex(input_file, upper);
+    if (output_file.is_open())
+      output_file << hexdump;
+    else
+      std::cout << hexdump;
   }
   return 0;
 }
