@@ -2,8 +2,6 @@
 #include <unistd.h>
 #include <fstream>
 #include <iostream>
-#include <iterator>
-#include <map>
 #include <sstream>
 static const char *option_string = "s:abc:EeghHil:ouv";
 static const char *__version = "0.0.1";
